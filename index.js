@@ -8,7 +8,7 @@ import { MongoClient } from 'mongodb';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const client = new MongoClient('mongodb+srv://matveykarlovw:hgem.9999999@cluster0.sfz0dsq.mongodb.net/?retryWrites=true&w=majority');
+const client = new MongoClient('mongodb+srv://vercel-admin-user:verceladmin@cluster0.sfz0dsq.mongodb.net/?retryWrites=true&w=majority');
 
 
 try{
