@@ -17,7 +17,6 @@ try{
 }catch (e) {
     console.log(e);
 }
-//connecting database
 
 const users = client.db().collection('users');
 const sets = client.db().collection('sets');
@@ -28,7 +27,6 @@ let adresses = {
     '/profile_icon.png' : path.join(__dirname, 'images', 'profile_icon.png'),
     '/main.css' : path.join(__dirname, 'CSS', 'main.css'),
 }
-//exclusions of adresses
 
 const server = http.createServer( (req,res) => {
 
@@ -75,11 +73,12 @@ const server = http.createServer( (req,res) => {
             
         }
     }
-    //function that reads urls
 
+    
     let place;
     let placeHolders = {};
     let parsedData;
+
     //proessing request's methods
     if (req.method === 'POST') {
         // parsing data
@@ -92,7 +91,6 @@ const server = http.createServer( (req,res) => {
         
         req.on('end', () => {
             parsedData = querystring.parse(data);
-        // parsing data
             console.log(parsedData)
             //work with forms and db
             if (req.url == '/regout') {
@@ -132,7 +130,6 @@ const server = http.createServer( (req,res) => {
                     placeHolders['{sets}'] = place
                     readUrl('/sets', placeHolders);
                 } );
-                //work with forms and db
                 
             }
             });
@@ -148,7 +145,7 @@ const server = http.createServer( (req,res) => {
                 makeArray2().then( (arr) => {
                     for ( let el of arr ) {
                         place = place + `<div class="set" >
-                        <p align="center" > <a href='/set_${el.Name}' >${el.Name}</a></p>
+                        <p align="center" > <a href='/${el.Name}_set' >${el.Name}</a></p>
                         <p align="center" >${el.Words}</p>
                     </div>
                     <br>`
@@ -156,12 +153,24 @@ const server = http.createServer( (req,res) => {
                     placeHolders['{sets}'] = place
                     readUrl('/sets', placeHolders);
                 } );
+       }else if (req.url.split('_')[1] == 'set') {
+            async function findSet(name) {
+                let thisSet = await sets.findOne( {Name : name} );
+                return thisSet;
+            }
+
+            findSet(req.url.split('_')[0].split('/')[1]).then( set => {
+                placeHolders['{setName}'] = set.Name;
+                placeHolders['{setName2}'] = set.Name;
+                placeHolders['{words}'] = set.Words;
+                readUrl('/set', placeHolders);
+            })
        }else {
         readUrl(req.url)
        }
 
     }
-    //processing request's methods
+    console.log( [req.url, req.method, parsedData].join(',') )
 
 
 })
