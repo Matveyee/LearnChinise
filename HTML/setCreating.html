@@ -24,8 +24,21 @@
         <p align="center" ><a href="/others" >Sets of others</a></p>
         <p align="center" ><a href="/info" >Information</a></p>
     </div>
-    <div class="sidenav" id="b" >
-        <p align="center" >Information</p>
+    <div id="mainBody" >
+        <p>
+            <form action="/newSet" method="post">
+                <label for="setName">Enter set's name:</label>
+                <input id="setName" type="text" name="setName">
+                <br>
+                <br>
+                <label for="words">Enter words:</label>
+                <input id="words" type="text" name="words">
+                <br>
+                <br>
+                <input type="submit" value="Load">
+            </form>
+        </p>
     </div>
+    <div class="sidenav" id="b" ></div>
 </body>
 </html> 
