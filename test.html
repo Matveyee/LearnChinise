@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" onchange="readFile(this)" >
+    <script>
+
+        function readFile(x) {
+            let reader = new FileReader();
+            
+            reader.readAsText(x.files[0]);
+            reader.onload = function() {
+                let text = reader.result.split('\r\n');
+                let max = 0;
+                let counter = 0;
+                let even = text.map( el => {if(Number(el) % 2 == 0) return Number(el)} );
+                
+                even.forEach( (el,index) => {
+                    even.forEach( (element,ind) => {
+                        if (ind > index) {
+                            if ( text.includes(String(el/2+element/2)) ) {
+                                console.log(counter)
+                                if ( el/2+element/2 > max ) max = el/2+element/2;
+                                counter++;
+                            }
+                        }
+                    } )
+                });
+                console.log(max + ":" + counter)
+
+
+
+            }
+        }
+
+    </script>
+</body>
+</html>

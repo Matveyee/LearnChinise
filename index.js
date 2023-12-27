@@ -1,14 +1,17 @@
-import http from 'http'
-import fs from 'fs'
+import http from 'http';
+import fs from 'fs';
 import path from 'path'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import querystring from 'querystring';
 import { MongoClient } from 'mongodb';
+import {googleTranslate} from './parser.js'
+googleTranslate('Cool','en','ru').then(console.log)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const client = new MongoClient('mongodb+srv://vercel-admin-user:verceladmin@cluster0.sfz0dsq.mongodb.net/?retryWrites=true&w=majority');
+// const client = new MongoClient('mongodb+srv://vercel-admin-user:verceladmin@cluster0.sfz0dsq.mongodb.net/?retryWrites=true&w=majority');
+const client = new MongoClient('mongodb+srv://matveykarlovw:screemer228@cluster0.sfz0dsq.mongodb.net/?retryWrites=true&w=majority');
 
 //connecting database
 try{
@@ -145,7 +148,7 @@ const server = http.createServer( (req,res) => {
                 makeArray2().then( (arr) => {
                     for ( let el of arr ) {
                         place = place + `<div class="set" >
-                        <p align="center" > <a href='/${el.Name}_set' >${el.Name}</a></p>
+                        <p align="center" > <a href='/${el.Name}_&&set' >${el.Name}</a></p>
                         <p align="center" >${el.Words}</p>
                     </div>
                     <br>`
@@ -153,17 +156,20 @@ const server = http.createServer( (req,res) => {
                     placeHolders['{sets}'] = place
                     readUrl('/sets', placeHolders);
                 } );
-       }else if (req.url.split('_')[1] == 'set') {
+       }else if (req.url.split('_&&')[1] == 'set') {
+            let translated = []
             async function findSet(name) {
                 let thisSet = await sets.findOne( {Name : name} );
                 return thisSet;
             }
 
-            findSet(req.url.split('_')[0].split('/')[1]).then( set => {
+            findSet(req.url.split('_&&')[0].split('/')[1]).then( set => {
                 placeHolders['{setName}'] = set.Name;
                 placeHolders['{setName2}'] = set.Name;
-                placeHolders['{words}'] = set.Words;
-                readUrl('/set', placeHolders);
+                googleTranslate(set.Words,'en','zh-CN').then((result) => {
+                    placeHolders['{words'] = set.Words +" "+  result;
+                    readUrl('/set', placeHolders);
+                })
             })
        }else {
         readUrl(req.url)
