@@ -6,7 +6,6 @@ import { dirname } from 'path';
 import querystring from 'querystring';
 import { MongoClient } from 'mongodb';
 import {googleTranslate} from './parser.js'
-googleTranslate('Cool','en','ru').then(console.log)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -157,7 +156,7 @@ const server = http.createServer( (req,res) => {
                     readUrl('/sets', placeHolders);
                 } );
        }else if (req.url.split('_&&')[1] == 'set') {
-            let translated = []
+        let wordarr = []
             async function findSet(name) {
                 let thisSet = await sets.findOne( {Name : name} );
                 return thisSet;
@@ -166,10 +165,17 @@ const server = http.createServer( (req,res) => {
             findSet(req.url.split('_&&')[0].split('/')[1]).then( set => {
                 placeHolders['{setName}'] = set.Name;
                 placeHolders['{setName2}'] = set.Name;
-                googleTranslate(set.Words,'en','zh-CN').then((result) => {
-                    placeHolders['{words'] = set.Words +" "+  result;
-                    readUrl('/set', placeHolders);
-                })
+                placeHolders['{words}'] = '';
+                wordarr = set.Words.split(' ')
+                async function tran(x) {
+                    for(let i = 0; i<x.length;i++) {
+                        placeHolders['{words}'] = await googleTranslate(x[i]).then(r => {
+                            return placeHolders['{words}'] + x[i] + ' => ' + r + '<br>';
+                         })
+                    }
+                    readUrl('/set', placeHolders)
+                }
+                tran(wordarr)
             })
        }else {
         readUrl(req.url)

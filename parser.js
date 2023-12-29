@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 
-export async function googleTranslate(word,lang1,lang2) {
+export async function googleTranslate(word,lang1 = 'en',lang2 = 'ru') {
     return fetch("https://translate.google.com/_/TranslateWebserverUi/data/batchexecute?rpcids=MkEWBc&source-path=%2F&f.sid=-2478773956840019839&bl=boq_translate-webserver_20231218.06_p0&hl=en&soc-app=1&soc-platform=1&soc-device=1&_reqid=77997&rt=c", {
   "headers": {
     "accept": "*/*",
@@ -31,6 +31,17 @@ export async function googleTranslate(word,lang1,lang2) {
   "method": "POST"
 })
 .then(res => res.text())
-.then(data => data.split('\n')[3].split('[').join('').split(']').join('').split(',')[28].split('\"')[1])
-};
+.then(data => {
+  let k = 0;
+  let qr = data.split('[').join('').split(']');
+  // console.log(qr)
+  for(let el of qr) {
+      if (el.length > 60) {
+        return el.split(',')[6].split('"')[1].split('\\')[0]
 
+    }
+  }
+  // // console.log(data.split('\n')[3].split('[').join('').split(']').join('').split(',')[28])
+  // return data.split('\n')[3].split('[').join('').split(']').join('').split(',')[28]
+})
+};
