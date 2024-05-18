@@ -36,7 +36,8 @@ export async function googleTranslate(word,lang1 = 'en',lang2 = 'ru') {
   let qr = data.split('[').join('').split(']');
   // console.log(qr)
   for(let el of qr) {
-      if (el.length > 60) {
+      if ((el.length > 60) && (qr.indexOf(el) > 3)) {
+
         return el.split(',')[6].split('"')[1].split('\\')[0]
 
     }

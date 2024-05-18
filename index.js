@@ -31,7 +31,7 @@ let adresses = {
 }
 
 const server = http.createServer( (req,res) => {
-
+    if ( req.url == '/') console.log(req)
     //function that reads urls
     function readUrl( url, info = 0) {
         if ( ( url != '/favicon.ico' )) {
@@ -170,7 +170,13 @@ const server = http.createServer( (req,res) => {
                 async function tran(x) {
                     for(let i = 0; i<x.length;i++) {
                         placeHolders['{words}'] = await googleTranslate(x[i]).then(r => {
-                            return placeHolders['{words}'] + x[i] + ' => ' + r + '<br>';
+                            console.log(r);
+                            if (r === undefined) {
+                                return placeHolders['{words}'] + x[i] + ' => ' + 'the translation has not been found' + '<br>';
+                            }else {
+                                return placeHolders['{words}'] + x[i] + ' => ' + r + '<br>'
+                            }
+                            ;
                          })
                     }
                     readUrl('/set', placeHolders)
